@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQs</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #fff3e0, #ffe0b2, #ffcc80);
+      color: #333;
+      overflow-x: hidden;
+      min-height: 100vh;
+      animation: bgShift 10s infinite alternate ease-in-out;
+    }
+
+    @keyframes bgShift {
+      0% { background: linear-gradient(135deg, #fff3e0, #ffe0b2, #ffcc80); }
+      50% { background: linear-gradient(135deg, #ffecb3, #ffe082, #ffca28); }
+      100% { background: linear-gradient(135deg, #ffe0b2, #ffb74d, #ff9800); }
+    }
+
+    /* Logo with animation */
+    .logo {
+      display: block;
+      margin: 30px auto 15px;
+      max-width: 300px;
+      height: auto;
+      opacity: 0.9;
+      animation: logoPop 2s ease-out forwards, logoGlow 4s infinite ease-in-out;
+    }
+
+    @keyframes logoPop {
+      0% { transform: scale(0.6) rotate(-10deg); opacity: 0; }
+      60% { transform: scale(1.1) rotate(3deg); opacity: 1; }
+      100% { transform: scale(1) rotate(0); }
+    }
+
+    @keyframes logoGlow {
+      0%, 100% { filter: drop-shadow(0 0 15px rgba(255, 152, 0, 0.4)); opacity: 0.9; }
+      50% { filter: drop-shadow(0 0 25px rgba(255, 140, 0, 0.8)); opacity: 1; }
+    }
+
+    h1 {
+      text-align: center;
+      margin: 10px 0 10px;
+      font-size: 2.8rem;
+      background: linear-gradient(90deg, #ff9800, #f57c00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: textFade 2s ease-in-out forwards;
+    }
+
+    @keyframes textFade {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    p.subtitle {
+      text-align: center;
+      margin-bottom: 40px;
+      font-size: 1.1rem;
+      color: #6d4c41;
+    }
+
+    .faq-container {
+      max-width: 900px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      padding: 0 20px 60px;
+    }
+
+    .faq-card {
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 16px;
+      padding: 20px;
+      cursor: pointer;
+      transition: 0.3s;
+      position: relative;
+      box-shadow: 0 4px 20px rgba(255, 152, 0, 0.2);
+      border: 1px solid rgba(255, 152, 0, 0.2);
+    }
+
+    .faq-card:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 6px 25px rgba(255, 152, 0, 0.35);
+    }
+
+    .faq-card h3 {
+      margin: 0;
+      font-size: 1.1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #e65100;
+    }
+
+    .faq-card p {
+      margin: 10px 0 0;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      display: none;
+      color: #4e342e;
+    }
+
+    .faq-card.active p {
+      display: block;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    .faq-card span.icon {
+      font-weight: bold;
+      font-size: 1.4rem;
+      transition: 0.3s;
+    }
+
+    .faq-card.active span.icon {
+      transform: rotate(45deg);
+      color: #f57c00;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Floating gradient circles */
+    .circle {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 204, 128, 0.5), transparent 70%);
+      animation: float 8s infinite ease-in-out;
+      z-index: -1;
+    }
+
+    .circle:nth-child(1) { width: 200px; height: 200px; top: 10%; left: 5%; animation-delay: 0s; }
+    .circle:nth-child(2) { width: 250px; height: 250px; bottom: 15%; right: 10%; animation-delay: 3s; }
+    .circle:nth-child(3) { width: 150px; height: 150px; bottom: 20%; left: 20%; animation-delay: 5s; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) translateX(0); }
+      50% { transform: translateY(-15px) translateX(15px); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Animated MUJ Logo -->
+  <img src="mulogo2.png" alt="MUJ Logo" class="logo">
+
+  <!-- Floating Circles -->
+  <div class="circle"></div>
+  <div class="circle"></div>
+  <div class="circle"></div>
+
+  <h1>FAQs</h1>
+  <p class="subtitle">Quick answers to the most common questions at Manipal University Jaipur 🌟</p>
+
+  <div class="faq-container">
+    <div class="faq-card"><h3>1. Where can I find the library? <span class="icon">+</span></h3><p>The MUJ central library is near the admin block, open from 8 AM to 10 PM.</p></div>
+    <div class="faq-card"><h3>2. How do I check faculty availability? <span class="icon">+</span></h3><p>Use the MUJ app’s "Faculty Availability" section or check departmental boards.</p></div>
+    <div class="faq-card"><h3>3. How do I raise a hostel complaint? <span class="icon">+</span></h3><p>Go to MUJ app → Services → Complaints → Hostel category and submit.</p></div>
+    <div class="faq-card"><h3>4. Where can I view my class timetable? <span class="icon">+</span></h3><p>Timetables are available on the MUJ ERP portal under the Academics section.</p></div>
+    <div class="faq-card"><h3>5. How do I connect with MUJ alumni? <span class="icon">+</span></h3><p>Use the Alumni Connect feature in the MUJ app or the official LinkedIn group.</p></div>
+    <div class="faq-card"><h3>6. Where is the placement cell? <span class="icon">+</span></h3><p>Ground floor of Block A, next to the student affairs office.</p></div>
+    <div class="faq-card"><h3>7. How can I book parking space? <span class="icon">+</span></h3><p>Use the Smart Parking feature in the MUJ app to check vacant spots.</p></div>
+    <div class="faq-card"><h3>8. How do I report a lost ID card? <span class="icon">+</span></h3><p>Visit student affairs with proof to apply for a duplicate ID card.</p></div>
+    <div class="faq-card"><h3>9. Where are sports facilities located? <span class="icon">+</span></h3><p>The sports complex is behind the main campus building, open 6 AM - 8 PM.</p></div>
+    <div class="faq-card"><h3>10. How do I contact ERP support? <span class="icon">+</span></h3><p>Raise a ticket in the MUJ app or email it-support@muj.edu.in.</p></div>
+    <div class="faq-card"><h3>11. How to navigate inside campus? <span class="icon">+</span></h3><p>Use MUJ app’s Smart Navigation for directions inside campus.</p></div>
+    <div class="faq-card"><h3>12. Where to apply for internships? <span class="icon">+</span></h3><p>Check the Internship Portal in MUJ app or placement cell notice boards.</p></div>
+    <div class="faq-card"><h3>13. How do I know about upcoming events? <span class="icon">+</span></h3><p>Events are posted in the MUJ app under Events & Activities.</p></div>
+    <div class="faq-card"><h3>14. How to reset my ERP password? <span class="icon">+</span></h3><p>Click "Forgot Password" on ERP login or contact IT support.</p></div>
+    <div class="faq-card"><h3>15. Where can I get medical help? <span class="icon">+</span></h3><p>The MUJ health center is near the main gate, open 24/7.</p></div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.faq-card').forEach(card => {
+      card.addEventListener('click', () => {
+        card.classList.toggle('active');
+        const icon = card.querySelector('.icon');
+        icon.textContent = card.classList.contains('active') ? '×' : '+';
+      });
+    });
+  </script>
+</body>
+</html>
