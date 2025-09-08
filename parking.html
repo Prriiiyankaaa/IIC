@@ -5,33 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Parking System Dashboard</title>
     
-    <!-- Tailwind CSS for modern styling -->
+    
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Google Fonts: Inter -->
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* Custom styles for the application */
+        
         body {
             font-family: 'Inter', sans-serif;
-            overflow: hidden; /* Prevents scrollbars on the main body */
+            overflow: hidden; 
         }
 
-        /* Styles for the individual parking slots */
+        
         .parking-slot {
             display: flex;
             justify-content: center;
             align-items: center;
-            border-radius: 0.25rem; /* rounded-sm */
-            font-size: 0.75rem; /* text-xs */
-            font-weight: 600; /* font-semibold */
+            border-radius: 0.25rem; 
+            font-size: 0.75rem; 
+            font-weight: 600; 
             color: white;
             cursor: pointer;
             transition: all 0.2s ease-in-out;
-            aspect-ratio: 1.5 / 1; /* Make slots rectangular */
+            aspect-ratio: 1.5 / 1; 
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
         }
 
@@ -41,25 +41,25 @@
             position: relative;
         }
 
-        .parking-slot.available { background-color: #10B981; } /* Green-500 */
-        .parking-slot.occupied { background-color: #EF4444; cursor: not-allowed; } /* Red-500 */
-        .parking-slot.reserved { background-color: #3B82F6; } /* Blue-500 */
+        .parking-slot.available { background-color: #10B981; } 
+        .parking-slot.occupied { background-color: #EF4444; cursor: not-allowed; } 
+        .parking-slot.reserved { background-color: #3B82F6; } 
         .parking-slot.selected {
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5); /* ring-4 ring-blue-500/50 */
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5); 
             transform: scale(1.1);
         }
 
-        /* Styles for Entrance/Exit Gates */
+        
         .gate {
             text-align: center;
             font-weight: bold;
-            color: #4b5563; /* gray-600 */
+            color: #4b5563; 
             padding: 0.5rem;
             margin: 0.5rem auto;
-            border: 2px dashed #9ca3af; /* gray-400 */
+            border: 2px dashed #9ca3af; 
             width: 50%;
-            border-radius: 0.375rem; /* rounded-md */
-            background-color: #f3f4f6; /* gray-200 */
+            border-radius: 0.375rem; 
+            background-color: #f3f4f6; 
         }
         .entrance-gate {
             margin-bottom: 1rem;
@@ -68,19 +68,19 @@
             margin-top: 1rem;
         }
 
-        /* Custom scrollbar for the main content and dashboard */
+        
         .custom-scrollbar::-webkit-scrollbar { width: 8px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; /* gray-100 */ }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 10px; /* gray-400 */ }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #64748b; /* gray-500 */ }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #64748b; }
     </style>
 </head>
 <body class="bg-gray-100">
 
     <div class="flex h-screen">
-        <!-- Dashboard Sidebar -->
+        
         <aside class="w-full md:w-1/3 lg:w-1/4 bg-white shadow-lg flex flex-col z-20">
-            <!-- Header -->
+            
             <header class="p-4 border-b">
                 <div class="flex items-center space-x-3 mb-4">
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMeDtJ0rObt2ouMsXh0ScWu_-9mzoqKObrbA&s" alt="College Logo" class="h-12">
@@ -102,7 +102,7 @@
                 </div>
             </header>
             
-            <!-- Information Panel -->
+            
             <div class="flex-1 p-4">
                 <h3 class="font-bold text-lg text-gray-800 mb-2">How it Works</h3>
                 <p class="text-sm text-gray-600">
@@ -110,7 +110,7 @@
                 </p>
             </div>
             
-            <!-- Reserved Spot Info -->
+            
             <div id="reservation-info" class="p-4 border-t bg-gray-50 hidden mt-auto">
                  <h3 class="font-bold text-lg text-gray-800 mb-2">Your Reservation</h3>
                  <div id="reserved-spot-details" class="text-gray-700"></div>
@@ -118,30 +118,30 @@
             </div>
         </aside>
 
-        <!-- Main Content with Parking Layouts -->
+        
         <main class="flex-1 p-4 md:p-6 overflow-y-auto custom-scrollbar">
             <div id="parking-layouts" class="space-y-8">
-                <!-- Parking Area A -->
+                
                 <div class="mb-8">
                     <h2 class="text-2xl font-bold text-gray-700 mb-3">Parking Area A (50 Slots)</h2>
                     <div id="parking-area-a" class="bg-gray-200 p-4 rounded-lg shadow-inner">
-                        <!-- Slots for Area A will be generated here -->
+                       
                     </div>
                 </div>
 
-                <!-- Parking Area B -->
+                
                 <div class="mb-8">
                     <h2 class="text-2xl font-bold text-gray-700 mb-3">Parking Area B (50 Slots)</h2>
                     <div id="parking-area-b" class="bg-gray-200 p-4 rounded-lg shadow-inner">
-                        <!-- Slots for Area B will be generated here -->
+                        
                     </div>
                 </div>
 
-                <!-- Parking Area C -->
+                
                 <div class="mb-8">
                     <h2 class="text-2xl font-bold text-gray-700 mb-3">Parking Area C (50 Slots)</h2>
                     <div id="parking-area-c" class="bg-gray-200 p-4 rounded-lg shadow-inner">
-                        <!-- Slots for Area C will be generated here -->
+                        
                     </div>
                 </div>
             </div>
@@ -150,7 +150,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // --- GLOBAL STATE ---
+            
             let parkingData = {};
             let reservedSpotId = null;
             let selectedSpotId = null;
@@ -160,7 +160,7 @@
                 'C': 50
             };
 
-            // --- DATA GENERATION ---
+            
             function initializeParkingData() {
                 for (const [area, count] of Object.entries(parkingAreas)) {
                     parkingData[area] = [];
@@ -173,21 +173,21 @@
                 }
             }
 
-            // --- RENDERING AND UI UPDATES ---
+            
             
             function renderParkingLayouts() {
                 for (const areaId of Object.keys(parkingAreas)) {
                     const container = document.getElementById(`parking-area-${areaId.toLowerCase()}`);
-                    container.innerHTML = ''; // Clear previous render
+                    container.innerHTML = ''; 
 
-                    // Add Entrance
+                   
                     const entranceGate = document.createElement('div');
                     entranceGate.className = 'gate entrance-gate';
                     entranceGate.textContent = 'ENTRANCE';
                     container.appendChild(entranceGate);
 
                     const layoutWrapper = document.createElement('div');
-                    layoutWrapper.className = 'flex justify-center gap-x-6'; // Creates the central "aisle"
+                    layoutWrapper.className = 'flex justify-center gap-x-6';
 
                     const leftRow = document.createElement('div');
                     leftRow.className = 'grid grid-cols-5 gap-2'; 
@@ -196,12 +196,12 @@
                     rightRow.className = 'grid grid-cols-5 gap-2';
 
                     const spotsInArea = parkingData[areaId];
-                    const spotsPerSide = Math.ceil(spotsInArea.length / 2); // 25 per side
+                    const spotsPerSide = Math.ceil(spotsInArea.length / 2);
 
                     spotsInArea.forEach((spot, index) => {
                         const spotDiv = document.createElement('div');
                         const [area, num] = spot.id.split('-');
-                        spotDiv.textContent = `${area}${num}`; // Set text to A1, A2, etc.
+                        spotDiv.textContent = `${area}${num}`; 
                         spotDiv.dataset.id = spot.id;
                         spotDiv.className = `parking-slot ${spot.status}`;
                         if (spot.id === selectedSpotId) {
@@ -262,14 +262,14 @@
                 const [area, num] = spotId.split('-');
                 const spot = parkingData[area].find(s => s.id === spotId);
 
-                // If clicking an available spot
+                
                 if (spot.status === 'available') {
                     // If another spot is already reserved, show a message
                     if (reservedSpotId && reservedSpotId !== spotId) {
                         alert("You can only reserve one spot at a time. Please cancel your existing reservation first.");
                         return;
                     }
-                    // Reserve the new spot
+                    
                     if (reservedSpotId === spotId) { // Un-reserving by clicking again
                         spot.status = 'available';
                         reservedSpotId = null;
@@ -320,20 +320,20 @@
                     const randomAreaKey = areaKeys[Math.floor(Math.random() * areaKeys.length)];
                     const areaSpots = parkingData[randomAreaKey];
                     
-                    // Pick a random spot in that area that isn't reserved by the user
+                    
                     const nonReservedSpots = areaSpots.filter(s => s.id !== reservedSpotId);
                     if (nonReservedSpots.length === 0) return;
 
                     const randomSpot = nonReservedSpots[Math.floor(Math.random() * nonReservedSpots.length)];
                     
-                    // Flip its status
+                    
                     randomSpot.status = randomSpot.status === 'available' ? 'occupied' : 'available';
                     
                     updateUI();
-                }, 2500); // Update every 2.5 seconds
+                }, 2500); 
             }
 
-            // --- INITIALIZATION ---
+            
             initializeParkingData();
             updateUI();
             simulateRealTimeUpdates();
