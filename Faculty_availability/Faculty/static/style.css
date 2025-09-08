@@ -1,0 +1,120 @@
+.header-image-corner {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    z-index: 10;
+}
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    background: linear-gradient(120deg, #FFDB58, #FFB347, #FFA500);
+    color: #333;
+    font-size: 50px;
+}
+
+.container {
+    width: 100%;
+    padding: 30px 50px;
+    box-sizing: border-box;
+}
+
+h1, h2 {
+    text-align: center;
+    color: #5a3e1b;
+    font-size: 70px;
+}
+
+.filter-form, .update-form {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.filter-form input[type="text"], .filter-form select {
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    width: 200px;
+}
+
+.filter-form button, .update-form button {
+    padding: 12px 20px;
+    border: none;
+    background-color: #d97706;
+    color: white;
+    cursor: pointer;
+    border-radius: 10px;
+}
+
+#map {
+    width: 100%;
+    height: 400px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    margin-bottom: 20px;
+}
+
+#employee-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    
+}
+
+.employee-card {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+    
+.status-options {
+    display: flex;
+    flex-direction: column; 
+    gap: 10px; 
+    margin: 5px;
+}
+
+.status-options input[type="radio"] {
+    transform: scale(2.5); 
+    margin-right: 10px;
+    align-content: center;
+    padding-bottom: 10px;
+}
+select[name="employee_id"] {
+    font-size: 30px;       
+    padding: 8px 12px;     
+    border-radius: 10px;    
+    width: 250px;          
+    align-items: center;
+}
+
+
+button[type="submit"] {
+    font-size: 18px;      
+    padding: 10px 20px;    
+    border-radius: 8px;    
+    background-color: #333; 
+    color: white;          
+    border: none;          
+    cursor: pointer;       
+    transition: background 0.3s ease;
+}
+
+
+button[type="submit"]:hover {
+    background-color: #555;
+}
+.small-image {
+    width: 100px;
+    
+}
