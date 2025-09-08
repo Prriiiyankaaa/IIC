@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Faculty Availability</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        
+        
+            <div class="header-image-corner">
+                <img src="{{ url_for('static', filename='images/image.png') }}" class="small-image">
+            </div>
+            <h1 style="text-align: center; font-size: 70px;">Faculty Availability</h1>
+        {% if message %}
+            <p class="message">{{ message }}</p>
+        {% endif %}
+        <form method="POST">
+            <label>Faculty:</label>
+            <select name="employee_id" required>
+                {% for emp in employees %}
+                    <option value="{{ emp.id }}">{{ emp.name }}</option>
+                {% endfor %}
+            </select>
+<hr>
+            <label>Status:</label>
+<div class="status-options">
+    <label><input type="radio" name="status" value="Available" required> Available</label>
+    <label><input type="radio" name="status" value="Busy"> Busy</label>
+    <label><input type="radio" name="status" value="Offline"> Offline</label>
+</div>
+
+
+            <button type="submit">Update</button>
+        </form>
+    </div>
+    <script>
+// Show reminder on page load
+window.onload = function() {
+    setTimeout(() => {
+        alert("Reminder: Please update your availability status!");
+    }, 1000); // shows after 5 seconds
+};
+
+// Repeat reminder every 30 minutes
+setInterval(() => {
+    alert("Reminder: Please update your availability status!");
+}, 30 * 60 * 1000); // 30 minutes
+</script>
+
+</body>
+</html>
