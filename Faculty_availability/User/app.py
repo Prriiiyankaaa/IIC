@@ -5,12 +5,11 @@ from datetime import datetime
 app = Flask(__name__)
 DB = 'database.db'
 
-# --- Initialize DB ---
 def init_db():
     conn = sqlite3.connect(DB)
     c = conn.cursor()
 
-    # Locations
+   
     c.execute('''CREATE TABLE IF NOT EXISTS locations (
                  location_id INTEGER PRIMARY KEY AUTOINCREMENT,
                  building_name TEXT,
@@ -19,7 +18,7 @@ def init_db():
                  lat REAL,
                  lng REAL)''')
 
-    # Employees
+    
     c.execute('''CREATE TABLE IF NOT EXISTS employees (
                  employee_id INTEGER PRIMARY KEY AUTOINCREMENT,
                  name TEXT,
@@ -30,7 +29,7 @@ def init_db():
                  latitude REAL,
                  longitude REAL)''')
 
-    # Timetable
+    
     c.execute('''CREATE TABLE IF NOT EXISTS timetable (
                  timetable_id INTEGER PRIMARY KEY AUTOINCREMENT,
                  employee_id INTEGER,
@@ -38,7 +37,7 @@ def init_db():
                  start_time TEXT,
                  end_time TEXT)''')
 
-    # Dummy data
+    
     c.execute('SELECT COUNT(*) FROM locations')
     if c.fetchone()[0] == 0:
         locations = [
@@ -73,7 +72,6 @@ def init_db():
     conn.commit()
     conn.close()
 
-# --- Auto update availability from timetable ---
 def update_availability_from_timetable():
     conn = sqlite3.connect(DB)
     c = conn.cursor()
@@ -91,7 +89,6 @@ def update_availability_from_timetable():
     conn.commit()
     conn.close()
 
-# --- Home page ---
 @app.route('/', methods=['GET', 'POST'])
 def home():
     update_availability_from_timetable()
@@ -99,7 +96,6 @@ def home():
     c = conn.cursor()
     message = ''
 
-    # Location update form
     if request.method == 'POST':
         employee_id = request.form.get('employee_id')
         location_id = request.form.get('location_id')
@@ -111,7 +107,6 @@ def home():
             conn.commit()
             message = 'Location updated successfully!'
 
-    # Filters
     query = request.args.get('q', '').lower()
     department = request.args.get('department', '')
     statuses = request.args.getlist('status')
