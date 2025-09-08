@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Campus Navigation & Employee Directory</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    
+</head>
+<body>
+    <div class="container">
+        <h1>Campus Navigation & Employee Directory</h1>
+
+        <form method="GET" action="/" class="filter-form">
+            <input type="text" name="q" placeholder="Search employees" value="{{ query }}">
+            
+            <label>Department:</label>
+            <select name="department">
+                <option value="">All</option>
+                <option value="Computer Science">Computer Science</option>
+                <option value="Mechanical">Mechanical</option>
+                <option value="Electrical">Electrical</option>
+                <option value="Civil">Civil</option>
+            </select>
+
+            <label>Status:</label>
+            <input type="checkbox" name="status" value="Available"> Available
+            <input type="checkbox" name="status" value="Busy"> Busy
+            <input type="checkbox" name="status" value="Offline"> Offline
+
+            <button type="submit">Filter</button>
+        </form>
+
+        <h2>Campus Map</h2>
+        <div id="map"></div>
+
+        <div class="update-form">
+            <h2>Update Employee Location</h2>
+            {% if message %}
+                <p class="message">{{ message }}</p>
+            {% endif %}
+            <form method="POST" action="/">
+                <label>Employee:</label>
+                <select name="employee_id" required>
+                    {% for emp in all_employees %}
+                        <option value="{{ emp[0] }}">{{ emp[1] }}</option>
+                    {% endfor %}
+                </select>
+
+                <label>New Location:</label>
+                <select name="location_id" required>
+                    {% for loc in locations %}
+                        <option value="{{ loc[0] }}">{{ loc[1] }}, Room {{ loc[2] }}</option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit">Update Location</button>
+            </form>
+        </div>
+
+        <div id="employee-list">
+            {% for emp in employees %}
+            <div class="employee-card">
+                <strong>{{ emp[1] }}</strong> - {{ emp[2] }} <br>
+                Location: {{ emp[3] or 'N/A' }}, Room: {{ emp[4] or 'N/A' }} <br>
+                Status: {{ emp[5] }} <br>
+                Phone: {{ emp[6] }} <br>
+                Directions: Go to {{ emp[3] or 'Building' }}, Room {{ emp[4] or 'N/A' }}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+window.onload = function() {
+
+    var map = L.map('map').setView([26.9148, 75.7865], 16);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    var employees = [
+        {% for emp in employees %}
+        {name: "{{ emp[1] }}", lat: {{ emp[7] }}, lng: {{ emp[8] }}, status: "{{ emp[5] }}"},
+        {% endfor %}
+    ];
+
+    employees.forEach(function(emp) {
+        if (emp.lat && emp.lng) {
+            L.marker([emp.lat, emp.lng])
+                .addTo(map)
+                .bindPopup(emp.name + " (" + emp.status + ")");
+        }
+    });
+};
+</script>
+</body>
+</html>
