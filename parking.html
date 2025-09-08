@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Parking System Dashboard</title>
+    
+    <!-- LeafletJS CSS for the interactive map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    
+    <!-- Leaflet Routing Machine CSS for navigation -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+
+    <!-- Tailwind CSS for modern styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Custom styles for the application */
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow: hidden; /* Prevents scrollbars */
+        }
+
+        /* Custom icons for parking spots */
+        .parking-marker {
+            border-radius: 50%;
+            width: 20px !important;
+            height: 20px !important;
+            border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 10px;
+            font-weight: bold;
+            color: white;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .parking-marker.selected {
+            transform: scale(1.5);
+            border-width: 3px;
+        }
+
+        .available { background-color: #10B981; } /* Green-500 */
+        .occupied { background-color: #EF4444; } /* Red-500 */
+        .reserved { background-color: #3B82F6; } /* Blue-500 */
+
+        /* Override Leaflet's z-index to keep dashboard on top */
+        .leaflet-pane { z-index: 10; }
+        .leaflet-top, .leaflet-bottom { z-index: 11; }
+        
+        /* Custom scrollbar for dashboard list */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9; /* gray-100 */
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #94a3b8; /* gray-400 */
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #64748b; /* gray-500 */
+        }
+
+        /* Hide the default routing instructions panel */
+        .leaflet-routing-container {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div class="flex h-screen">
+        <!-- Dashboard Sidebar -->
+        <aside class="w-full md:w-1/3 lg:w-1/4 bg-white shadow-lg flex flex-col z-20">
+            <!-- Header -->
+            <header class="p-4 border-b">
+                <div class="flex items-center space-x-3 mb-4">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMeDtJ0rObt2ouMsXh0ScWu_-9mzoqKObrbA&s" alt="College Logo" class="h-12">
+                    <h1 class="text-xl font-bold text-gray-800">Smart Parking</h1>
+                </div>
+                 <div class="grid grid-cols-3 gap-2 text-center">
+                    <div class="bg-gray-100 p-2 rounded-lg">
+                        <p class="text-sm text-gray-500">Total</p>
+                        <p id="total-spots" class="text-lg font-bold text-gray-800">0</p>
+                    </div>
+                    <div class="bg-green-100 p-2 rounded-lg">
+                        <p class="text-sm text-green-600">Available</p>
+                        <p id="available-spots" class="text-lg font-bold text-green-600">0</p>
+                    </div>
+                    <div class="bg-red-100 p-2 rounded-lg">
+                        <p class="text-sm text-red-600">Occupied</p>
+                        <p id="occupied-spots" class="text-lg font-bold text-red-600">0</p>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Parking Spot List -->
+            <div id="spot-list" class="flex-1 overflow-y-auto p-4 custom-scrollbar">
+                <!-- Spot items will be injected here by JavaScript -->
+            </div>
+            
+            <!-- Reserved Spot Info -->
+            <div id="reservation-info" class="p-4 border-t bg-gray-50 hidden">
+                 <h3 class="font-bold text-lg text-gray-800 mb-2">Your Reservation</h3>
+                 <div id="reserved-spot-details" class="text-gray-700"></div>
+                 <button id="navigate-btn" class="mt-3 w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors">Navigate</button>
+                 <button id="cancel-reservation-btn" class="mt-2 w-full bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors">Cancel</button>
+            </div>
+        </aside>
+
+        <!-- Map Container -->
+        <main class="flex-1 relative">
+            <div id="map" class="h-full w-full"></div>
+        </main>
+    </div>
+
+    <!-- LeafletJS and Routing Machine JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // --- GLOBAL STATE ---
+            let parkingSpots = [];
+            let reservedSpotId = null;
+            let routeControl = null;
+            let selectedSpotId = null;
+            
+            // --- MAP INITIALIZATION ---
+            const mapCenter = [26.8434, 75.5654];
+            const map = L.map('map').setView(mapCenter, 18);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            // --- DATA GENERATION (MOCK) ---
+            function initializeParkingData() {
+                const totalSpots = 50;
+                const baseLat = 26.8434;
+                const baseLng = 75.5654;
+
+                for (let i = 1; i <= totalSpots; i++) {
+                    parkingSpots.push({
+                        id: i,
+                        lat: baseLat + (Math.floor((i - 1) / 5) * 0.0001) + (Math.random() - 0.5) * 0.00005,
+                        lng: baseLng + ((i - 1) % 5 * 0.0002) + (Math.random() - 0.5) * 0.00005,
+                        status: Math.random() < 0.6 ? 'available' : 'occupied',
+                        marker: null
+                    });
+                }
+            }
+
+            // --- RENDERING AND UI UPDATES ---
+            
+            // Function to update the dashboard statistics
+            function updateDashboardStats() {
+                const total = parkingSpots.length;
+                const available = parkingSpots.filter(s => s.status === 'available').length;
+                const occupied = parkingSpots.filter(s => s.status === 'occupied').length + parkingSpots.filter(s => s.status === 'reserved').length;
+                
+                document.getElementById('total-spots').textContent = total;
+                document.getElementById('available-spots').textContent = available;
+                document.getElementById('occupied-spots').textContent = occupied;
+            }
+
+            // Function to render the list of spots in the dashboard
+            function renderSpotList() {
+                const listContainer = document.getElementById('spot-list');
+                listContainer.innerHTML = ''; // Clear existing list
+                
+                parkingSpots.forEach(spot => {
+                    const spotDiv = document.createElement('div');
+                    spotDiv.className = `p-3 mb-2 rounded-lg flex justify-between items-center cursor-pointer transition-all duration-200 ${selectedSpotId === spot.id ? 'bg-blue-100 ring-2 ring-blue-400' : 'bg-gray-50 hover:bg-gray-100'}`;
+                    spotDiv.dataset.id = spot.id;
+
+                    let statusColor, statusText;
+                    switch (spot.status) {
+                        case 'available': statusColor = 'bg-green-500'; statusText = 'Available'; break;
+                        case 'occupied':  statusColor = 'bg-red-500'; statusText = 'Occupied'; break;
+                        case 'reserved':  statusColor = 'bg-blue-500'; statusText = 'Reserved by You'; break;
+                    }
+
+                    spotDiv.innerHTML = `
+                        <div>
+                            <p class="font-bold text-gray-800">Parking Spot #${spot.id}</p>
+                            <div class="flex items-center mt-1">
+                                <span class="w-3 h-3 rounded-full ${statusColor} mr-2"></span>
+                                <p class="text-sm text-gray-600">${statusText}</p>
+                            </div>
+                        </div>
+                        ${spot.status === 'available' && !reservedSpotId ? `<button data-id="${spot.id}" class="reserve-btn bg-green-500 text-white text-xs font-bold py-1 px-3 rounded-full hover:bg-green-600">Reserve</button>` : ''}
+                    `;
+                    
+                    spotDiv.addEventListener('click', () => handleSpotSelection(spot.id));
+                    listContainer.appendChild(spotDiv);
+                });
+            }
+
+            // Function to create custom map markers
+            function createParkingIcon(spot) {
+                const statusClass = spot.status;
+                const selectedClass = selectedSpotId === spot.id ? 'selected' : '';
+                return L.divIcon({
+                    className: `parking-marker ${statusClass} ${selectedClass}`,
+                    html: `<b>P</b>`,
+                    iconSize: [20, 20]
+                });
+            }
+
+            // Function to render markers on the map
+            function renderMapMarkers() {
+                parkingSpots.forEach(spot => {
+                    const popupContent = `<b>Parking Spot ${spot.id}</b><br>Status: ${spot.status.charAt(0).toUpperCase() + spot.status.slice(1)}`;
+                    if (spot.marker) {
+                        spot.marker.setIcon(createParkingIcon(spot)).getPopup().setContent(popupContent);
+                    } else {
+                        spot.marker = L.marker([spot.lat, spot.lng], { icon: createParkingIcon(spot) })
+                            .addTo(map)
+                            .bindPopup(popupContent)
+                            .on('click', () => handleSpotSelection(spot.id));
+                    }
+                });
+            }
+
+            // Central function to update all UI components
+            function updateUI() {
+                updateDashboardStats();
+                renderSpotList();
+                renderMapMarkers();
+                updateReservationInfo();
+            }
+
+            // --- EVENT HANDLERS AND LOGIC ---
+            
+            // Handle clicking on a spot (either map or list)
+            function handleSpotSelection(spotId) {
+                selectedSpotId = spotId;
+                const spot = parkingSpots.find(s => s.id === spotId);
+                if (spot) {
+                    map.flyTo([spot.lat, spot.lng], 19);
+                }
+                updateUI();
+            }
+            
+            // Handle spot reservation
+            document.getElementById('spot-list').addEventListener('click', function(e) {
+                if (e.target && e.target.classList.contains('reserve-btn')) {
+                    const spotId = parseInt(e.target.dataset.id);
+                    if (reservedSpotId) {
+                        alert("You can only reserve one spot at a time.");
+                        return;
+                    }
+                    const spot = parkingSpots.find(s => s.id === spotId);
+                    if (spot && spot.status === 'available') {
+                        spot.status = 'reserved';
+                        reservedSpotId = spot.id;
+                        selectedSpotId = spot.id;
+                        updateUI();
+                    }
+                }
+            });
+
+            // Update the reservation info panel
+            function updateReservationInfo() {
+                const infoPanel = document.getElementById('reservation-info');
+                if (reservedSpotId) {
+                    const spot = parkingSpots.find(s => s.id === reservedSpotId);
+                    document.getElementById('reserved-spot-details').innerHTML = `<p>You have reserved <strong>Spot #${spot.id}</strong>.</p>`;
+                    infoPanel.classList.remove('hidden');
+                } else {
+                    infoPanel.classList.add('hidden');
+                }
+            }
+            
+            // Handle navigation
+            document.getElementById('navigate-btn').addEventListener('click', () => {
+                if (!reservedSpotId) return;
+                const spot = parkingSpots.find(s => s.id === reservedSpotId);
+
+                if (routeControl) { // Remove old route if exists
+                    map.removeControl(routeControl);
+                }
+
+                navigator.geolocation.getCurrentPosition(position => {
+                    const userLat = position.coords.latitude;
+                    const userLng = position.coords.longitude;
+                    
+                    routeControl = L.Routing.control({
+                        waypoints: [
+                            L.latLng(userLat, userLng), // User's location
+                            L.latLng(spot.lat, spot.lng)  // Parking spot location
+                        ],
+                        routeWhileDragging: true,
+                        show: false, // Hide the turn-by-turn instructions panel
+                        createMarker: function() { return null; } // Don't create default start/end markers
+                    }).addTo(map);
+
+                }, error => {
+                    console.error("Geolocation error:", error);
+                    alert("Could not get your location. Please enable location services.");
+                });
+            });
+
+            // Handle canceling reservation
+            document.getElementById('cancel-reservation-btn').addEventListener('click', () => {
+                if (reservedSpotId) {
+                    const spot = parkingSpots.find(s => s.id === reservedSpotId);
+                    spot.status = 'available';
+                    reservedSpotId = null;
+                    if (routeControl) {
+                        map.removeControl(routeControl);
+                        routeControl = null;
+                    }
+                    updateUI();
+                }
+            });
+
+            // --- REAL-TIME SIMULATION ---
+            function simulateRealTimeUpdates() {
+                setInterval(() => {
+                    const availableSpots = parkingSpots.filter(s => s.status === 'available' || s.status === 'occupied');
+                    if (availableSpots.length === 0) return;
+
+                    const randomIndex = Math.floor(Math.random() * availableSpots.length);
+                    const spotToUpdate = availableSpots[randomIndex];
+
+                    spotToUpdate.status = spotToUpdate.status === 'available' ? 'occupied' : 'available';
+                    
+                    // Only update UI if the changed spot is not the selected one to avoid jarring effects
+                    if (spotToUpdate.id !== selectedSpotId) {
+                       updateUI();
+                    }
+                }, 3000);
+            }
+
+            // --- INITIALIZATION ---
+            initializeParkingData();
+            updateUI();
+            simulateRealTimeUpdates();
+        });
+    </script>
+</body>
+</html>
+
