@@ -21,40 +21,21 @@
       100% { background: linear-gradient(135deg, #ffe0b2, #ffb74d, #ff9800); }
     }
 
-    /* Logo with animation */
+    /* MUJ logo centered top */
     .logo {
       display: block;
-      margin: 30px auto 15px;
-      max-width: 300px;
+      margin: 20px auto 10px;
+      max-width: 220px;
       height: auto;
-      opacity: 0.9;
-      animation: logoPop 2s ease-out forwards, logoGlow 4s infinite ease-in-out;
-    }
-
-    @keyframes logoPop {
-      0% { transform: scale(0.6) rotate(-10deg); opacity: 0; }
-      60% { transform: scale(1.1) rotate(3deg); opacity: 1; }
-      100% { transform: scale(1) rotate(0); }
-    }
-
-    @keyframes logoGlow {
-      0%, 100% { filter: drop-shadow(0 0 15px rgba(255, 152, 0, 0.4)); opacity: 0.9; }
-      50% { filter: drop-shadow(0 0 25px rgba(255, 140, 0, 0.8)); opacity: 1; }
     }
 
     h1 {
       text-align: center;
       margin: 10px 0 10px;
-      font-size: 2.8rem;
+      font-size: 2.5rem;
       background: linear-gradient(90deg, #ff9800, #f57c00);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      animation: textFade 2s ease-in-out forwards;
-    }
-
-    @keyframes textFade {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
     }
 
     p.subtitle {
@@ -85,7 +66,7 @@
     }
 
     .faq-card:hover {
-      transform: translateY(-4px) scale(1.02);
+      transform: translateY(-4px);
       box-shadow: 0 6px 25px rgba(255, 152, 0, 0.35);
     }
 
@@ -147,7 +128,7 @@
   </style>
 </head>
 <body>
-  <!-- Animated MUJ Logo -->
+  <!-- MUJ Logo Centered -->
   <img src="mulogo2.png" alt="MUJ Logo" class="logo">
 
   <!-- Floating Circles -->
