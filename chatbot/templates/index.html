@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ChatBot</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <img src="{{ url_for('static', filename='image.png') }}"  class="logo">
+      <h1>Chat with us!</h1>
+    </div>
+  </header>
+
+  <main class="chat-container">
+    <div id="chat-box" class="chat-box"></div>
+
+    <div class="input-area">
+      <input type="text" id="user-input" placeholder="Type your message..." 
+             onkeypress="if(event.key==='Enter'){sendMessage()}">
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </main>
+
+  <script>
+    async function sendMessage() {
+      let inputField = document.getElementById("user-input");
+      let userMessage = inputField.value.trim();
+      if (!userMessage) return;
+
+      let chatBox = document.getElementById("chat-box");
+      chatBox.innerHTML += `<div class="msg user-msg"><span>${userMessage}</span></div>`;
+      inputField.value = "";
+
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      let response = await fetch("/chat", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({message: userMessage})
+      });
+
+      let data = await response.json();
+      chatBox.innerHTML += `<div class="msg bot-msg"><span>${data.reply}</span></div>`;
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+  </script>
+</body>
+</html>
