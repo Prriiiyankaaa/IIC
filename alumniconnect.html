@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MUJ Alumni Connect</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; margin:0; background:#0d0d1a; color:#fff; overflow-x:hidden; }
+    .animated-background { position:fixed; top:0; left:0; width:100%; height:100%;
+      background:linear-gradient(-45deg,#0d0d1a,#1a1a33,#333366,#1a1a33);
+      background-size:400% 400%; animation:gradient-pulse 15s ease infinite; z-index:-1; }
+    @keyframes gradient-pulse {0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+    .star{position:absolute;background:white;border-radius:50%;opacity:0.8;box-shadow:0 0 6px white;animation:twinkle 3s infinite alternate;}
+    @keyframes twinkle{from{opacity:0.3}to{opacity:1}}
+    .shooting-star{position:absolute;width:150px;height:2px;background:linear-gradient(90deg,white,transparent);
+      opacity:0.9;transform:rotate(-45deg);animation:shoot 2s linear forwards;}
+    @keyframes shoot{from{transform:translate(0,0) rotate(-45deg);opacity:1} to{transform:translate(600px,600px) rotate(-45deg);opacity:0}}
+    .card:hover{transform:scale(1.05); box-shadow:0 0 15px rgba(99,102,241,0.6);}
+    .modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);
+      display:none;align-items:center;justify-content:center;z-index:50;}
+    .modal-content{background:#1f2937;padding:20px;border-radius:16px;max-width:500px;width:90%;color:white;}
+  </style>
+</head>
+<body>
+<div class="animated-background" id="animated-background"></div>
+
+<!-- Main Heading -->
+<div class="relative z-10 text-center pt-20 pb-10 max-w-4xl mx-auto">
+  <h1 class="text-4xl font-bold mb-4">Alumni Connect</h1>
+  <p class="text-lg text-gray-300">Search, connect, and network with our esteemed alumni.</p>
+</div>
+
+<!-- Branch Section -->
+<div id="branch-section" class="relative z-10 p-10 max-w-6xl mx-auto">
+  <h1 class="text-3xl font-bold text-center mb-12">Select a Branch</h1>
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 justify-items-center">
+    <div class="bg-gray-800 bg-opacity-70 rounded-2xl p-6 text-center cursor-pointer card" onclick="showBranch('CSE Core')">CSE Core</div>
+    <div class="bg-gray-800 bg-opacity-70 rounded-2xl p-6 text-center cursor-pointer card" onclick="showBranch('IT')">IT</div>
+    <div class="bg-gray-800 bg-opacity-70 rounded-2xl p-6 text-center cursor-pointer card" onclick="showBranch('IoT')">IoT</div>
+    <div class="bg-gray-800 bg-opacity-70 rounded-2xl p-6 text-center cursor-pointer card" onclick="showBranch('AI/ML')">AI/ML</div>
+    <div class="bg-gray-800 bg-opacity-70 rounded-2xl p-6 text-center cursor-pointer card" onclick="showBranch('Data Science')">Data Science</div>
+    <div class="bg-gray-800 bg-opacity-70 rounded-2xl p-6 text-center cursor-pointer card" onclick="showBranch('Mechanical')">Mechanical</div>
+    <div class="bg-gray-800 bg-opacity-70 rounded-2xl p-6 text-center cursor-pointer card" onclick="showBranch('Electrical')">Electrical</div>
+    <div class="bg-gray-800 bg-opacity-70 rounded-2xl p-6 text-center cursor-pointer card" onclick="showBranch('Electronics')">Electronics</div>
+  </div>
+</div>
+
+<!-- Students Section -->
+<div id="students-section" class="hidden relative z-10 p-10 max-w-6xl mx-auto">
+  <button onclick="backToBranches()" class="mb-6 px-4 py-2 bg-indigo-600 rounded-lg">← Back</button>
+  <h2 id="branch-title" class="text-2xl font-bold mb-6"></h2>
+  <div id="students-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+</div>
+
+<!-- Modal -->
+<div id="profile-modal" class="modal">
+  <div class="modal-content">
+    <button onclick="closeModal()" class="text-red-400 float-right">✖</button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+  // Alumni Data with 9 students per branch
+  const alumniData = {
+    "CSE Core":[
+      {name:"Rohit Sharma",email:"rohit@muj.ac.in",phone:"9876543210",linkedin:"linkedin.com/in/rohit",company:"Microsoft",designation:"Software Engineer",package:"28 LPA",photo:"https://randomuser.me/api/portraits/men/25.jpg"},
+      {name:"Sanya Kapoor",email:"sanya@muj.ac.in",phone:"9988776655",linkedin:"linkedin.com/in/sanya",company:"Google",designation:"Full Stack Developer",package:"30 LPA",photo:"https://randomuser.me/api/portraits/women/34.jpg"},
+      {name:"Manish Gupta",email:"manish@muj.ac.in",phone:"8877665544",linkedin:"linkedin.com/in/manish",company:"Facebook",designation:"Data Engineer",package:"28 LPA",photo:"https://randomuser.me/api/portraits/men/35.jpg"},
+      {name:"Tanya Singh",email:"tanya@muj.ac.in",phone:"7766554433",linkedin:"linkedin.com/in/tanya",company:"Swiggy",designation:"Mobile Developer",package:"22 LPA",photo:"https://randomuser.me/api/portraits/women/36.jpg"},
+      {name:"Kunal Jain",email:"kunal@muj.ac.in",phone:"6655443322",linkedin:"linkedin.com/in/kunal",company:"Adobe",designation:"Backend Engineer",package:"25 LPA",photo:"https://randomuser.me/api/portraits/men/37.jpg"},
+      {name:"Amit Roy",email:"amit@muj.ac.in",phone:"9988771122",linkedin:"linkedin.com/in/amit",company:"Zoho",designation:"Frontend Engineer",package:"24 LPA",photo:"https://randomuser.me/api/portraits/men/26.jpg"},
+      {name:"Priya Sharma",email:"priya@muj.ac.in",phone:"8877662233",linkedin:"linkedin.com/in/priya",company:"TCS",designation:"Software Developer",package:"20 LPA",photo:"https://randomuser.me/api/portraits/women/27.jpg"},
+      {name:"Ankit Mehta",email:"ankit@muj.ac.in",phone:"7766553344",linkedin:"linkedin.com/in/ankit",company:"Infosys",designation:"Software Engineer",package:"21 LPA",photo:"https://randomuser.me/api/portraits/men/28.jpg"},
+      {name:"Neha Verma",email:"neha@muj.ac.in",phone:"6655445566",linkedin:"linkedin.com/in/neha",company:"HCL",designation:"Developer",package:"19 LPA",photo:"https://randomuser.me/api/portraits/women/29.jpg"}
+    ],
+    "IT":[
+      {name:"Simran Kaur",email:"simran@muj.ac.in",phone:"8765432109",linkedin:"linkedin.com/in/simran",company:"Amazon",designation:"Cloud Engineer",package:"24 LPA",photo:"https://randomuser.me/api/portraits/women/26.jpg"},
+      {name:"Rajat Malhotra",email:"rajat@muj.ac.in",phone:"9988223344",linkedin:"linkedin.com/in/rajat",company:"IBM",designation:"System Analyst",package:"20 LPA",photo:"https://randomuser.me/api/portraits/men/38.jpg"},
+      {name:"Megha Rathi",email:"megha@muj.ac.in",phone:"7788996655",linkedin:"linkedin.com/in/megha",company:"Accenture",designation:"Consultant",package:"18 LPA",photo:"https://randomuser.me/api/portraits/women/39.jpg"},
+      {name:"Nikhil Sinha",email:"nikhil@muj.ac.in",phone:"8899776655",linkedin:"linkedin.com/in/nikhil",company:"Oracle",designation:"Database Engineer",package:"21 LPA",photo:"https://randomuser.me/api/portraits/men/40.jpg"},
+      {name:"Rhea Kapoor",email:"rhea@muj.ac.in",phone:"7766885544",linkedin:"linkedin.com/in/rhea",company:"Infosys",designation:"Software Engineer",package:"16 LPA",photo:"https://randomuser.me/api/portraits/women/41.jpg"},
+      {name:"Vikram Das",email:"vikram@muj.ac.in",phone:"6655442233",linkedin:"linkedin.com/in/vikram",company:"Capgemini",designation:"IT Analyst",package:"17 LPA",photo:"https://randomuser.me/api/portraits/men/41.jpg"},
+      {name:"Shreya Singh",email:"shreya@muj.ac.in",phone:"7766551122",linkedin:"linkedin.com/in/shreya",company:"Dell",designation:"IT Consultant",package:"19 LPA",photo:"https://randomuser.me/api/portraits/women/42.jpg"},
+      {name:"Aakash Verma",email:"aakash@muj.ac.in",phone:"8877662211",linkedin:"linkedin.com/in/aakash",company:"HP",designation:"Network Engineer",package:"18 LPA",photo:"https://randomuser.me/api/portraits/men/43.jpg"},
+      {name:"Pooja Jain",email:"pooja@muj.ac.in",phone:"9988773344",linkedin:"linkedin.com/in/pooja",company:"Wipro",designation:"Software Developer",package:"16 LPA",photo:"https://randomuser.me/api/portraits/women/44.jpg"}
+    ]
+    // Similarly, add IoT, AI/ML, Data Science, Mechanical, Electrical, Electronics with 9 students each...
+  };
+
+  const branchSection=document.getElementById("branch-section");
+  const studentsSection=document.getElementById("students-section");
+  const branchTitle=document.getElementById("branch-title");
+  const studentsList=document.getElementById("students-list");
+  const modal=document.getElementById("profile-modal");
+  const modalBody=document.getElementById("modal-body");
+
+  function showBranch(branch){
+    branchSection.classList.add("hidden");
+    studentsSection.classList.remove("hidden");
+    branchTitle.textContent=branch+" Alumni";
+    studentsList.innerHTML="";
+    alumniData[branch].forEach(alumnus=>{
+      const card=document.createElement("div");
+      card.className="bg-gray-800 bg-opacity-70 rounded-xl p-4 cursor-pointer text-center card";
+      card.innerHTML=`<img src="${alumnus.photo}" class="w-20 h-20 mx-auto rounded-full border-2 border-indigo-500 mb-2">
+                      <h3 class="font-bold">${alumnus.name}</h3>
+                      <p class="text-sm text-gray-300">${alumnus.designation}</p>`;
+      card.onclick=()=>showProfile(alumnus);
+      studentsList.appendChild(card);
+    });
+  }
+
+  function backToBranches(){
+    studentsSection.classList.add("hidden");
+    branchSection.classList.remove("hidden");
+  }
+
+  function showProfile(alumnus){
+    modalBody.innerHTML=`<div class="text-center">
+        <img src="${alumnus.photo}" class="w-24 h-24 mx-auto rounded-full border-4 border-indigo-500 mb-4">
+        <h2 class="text-2xl font-bold">${alumnus.name}</h2>
+        <p class="text-gray-300 mb-2">${alumnus.designation} at ${alumnus.company}</p>
+        <p class="mb-2"><b>Email:</b> ${alumnus.email}</p>
+        <p class="mb-2"><b>Phone:</b> ${alumnus.phone}</p>
+        <p class="mb-2"><b>LinkedIn:</b> <a href="https://${alumnus.linkedin}" target="_blank" class="text-blue-400">${alumnus.linkedin}</a></p>
+        <p><b>Package:</b> ${alumnus.package}</p>
+      </div>`;
+    modal.style.display="flex";
+  }
+
+  function closeModal(){modal.style.display="none";}
+
+  // Stars + Shooting stars
+  function createStar(){const s=document.createElement('div');s.className='star';
+    const size=Math.random()*3+2;s.style.width=`${size}px`;s.style.height=`${size}px`;
+    s.style.top=`${Math.random()*100}vh`;s.style.left=`${Math.random()*100}vw`;
+    document.getElementById('animated-background').appendChild(s);}
+  function createShootingStar(){const star=document.createElement('div');star.className='shooting-star';
+    star.style.top=`${Math.random()*40}vh`;star.style.left=`-${Math.random()*100}px`;
+    document.getElementById('animated-background').appendChild(star);
+    setTimeout(()=>star.remove(),2000);}
+  for(let i=0;i<80;i++)createStar();setInterval(createShootingStar,5000);
+</script>
+</body>
+</html>
