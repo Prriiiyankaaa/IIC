@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MUJ Connect - Welcome</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --muj-orange: #F5821F;
+            --light-text: #f0f0f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            
+            /* --- BACKGROUND IMAGE UPDATED HERE --- */
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://i.ytimg.com/vi/F3BrKOi18lE/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLCXayob-B6quvKjJ6FWdZsoeDc22Q');
+            background-size: cover;
+            background-position: center;
+            overflow: hidden;
+        }
+        
+        .flip-card-container {
+            perspective: 1500px;
+        }
+
+        .flip-card {
+            width: 380px;
+            min-height: 500px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.7, 0, 0.3, 1);
+        }
+
+        .flip-card.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .card-face--back {
+            transform: rotateY(180deg);
+        }
+
+        .logo {
+            width: 80px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: var(--light-text);
+            font-weight: 600;
+            margin-bottom: 25px;
+            font-size: 2em;
+        }
+
+        .form-container {
+            width: 100%;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .input-field {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1.5px solid rgba(255, 255, 255, 0.4);
+            padding: 10px 5px;
+            font-size: 16px;
+            color: var(--light-text);
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .input-label {
+            position: absolute;
+            top: 10px;
+            left: 5px;
+            color: rgba(255, 255, 255, 0.7);
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus + .input-label,
+        .input-field:valid + .input-label {
+            top: -12px;
+            font-size: 12px;
+            color: var(--muj-orange);
+        }
+        
+        .input-field:focus {
+            border-bottom-color: var(--muj-orange);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            background: var(--muj-orange);
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(245, 130, 31, 0.3);
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 130, 31, 0.5);
+        }
+
+        .switch-link {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .switch-link:hover {
+            color: var(--muj-orange);
+            font-weight: 600;
+        }
+
+        @media (max-width: 420px) {
+            .flip-card {
+                width: 90vw;
+            }
+            h2 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="flip-card-container">
+        <div class="flip-card" id="flip-card">
+            <div class="card-face card-face--front">
+                <img src="https://upload.wikimedia.org/wikipedia/en/1/1f/Manipal_University_Jaipur_logo.png" alt="MUJ Logo" class="logo">
+                <h2>Welcome Back</h2>
+                <form class="form-container" onsubmit="event.preventDefault();">
+                    <div class="input-group">
+                        <input type="email" id="email-login" class="input-field" required>
+                        <label for="email-login" class="input-label">University Email</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="password-login" class="input-field" required>
+                        <label for="password-login" class="input-label">Password</label>
+                    </div>
+                    <button type="submit" class="submit-btn">Sign In</button>
+                </form>
+                <a class="switch-link" id="flip-to-signup">New to the app? Create Account</a>
+            </div>
+
+            <div class="card-face card-face--back">
+                 <img src="https://upload.wikimedia.org/wikipedia/en/1/1f/Manipal_University_Jaipur_logo.png" alt="MUJ Logo" class="logo">
+                <h2>Create Account</h2>
+                <form class="form-container" onsubmit="event.preventDefault();">
+                    <div class="input-group">
+                        <input type="text" id="reg-no" class="input-field" required>
+                        <label for="reg-no" class="input-label">Registration Number</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="email" id="email-signup" class="input-field" required>
+                        <label for="email-signup" class="input-label">University Email</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="password-signup" class="input-field" required>
+                        <label for="password-signup" class="input-label">Create Password</label>
+                    </div>
+                    <button type="submit" class="submit-btn">Sign Up</button>
+                </form>
+                <a class="switch-link" id="flip-to-signin">Already have an account? Sign In</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Card Flipping Logic ---
+        const flipCard = document.getElementById('flip-card');
+        document.getElementById('flip-to-signup').addEventListener('click', function(e) {
+            e.preventDefault();
+            flipCard.classList.add('is-flipped');
+        });
+        document.getElementById('flip-to-signin').addEventListener('click', function(e) {
+            e.preventDefault();
+            flipCard.classList.remove('is-flipped');
+        });
+    </script>
+</body>
+</html>
